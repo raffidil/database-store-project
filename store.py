@@ -34,22 +34,21 @@ def insert_warehouse(id, mid, city):
 
 def insert_stock(iid, wid, quantity):
     db.execute(
-        """INSERT INTO Warehouse (Iid, Wid, Quantity) VALUES (?,?,?)""", (iid, wid, quantity))
+        """INSERT INTO Stock (Iid, Wid, Quantity) VALUES (?,?,?)""", (iid, wid, quantity))
 
 
-def print_command():
-    a = input("""
+def get_command():
+    return input("""
         1.Insert Staff
         2.Insert Item
         3.Insert Warehouse
         4.Insert Stock
         0.exit\n
         command: """)
-    return a
 
 
 # main function
-_command = print_command()
+_command = get_command()
 
 
 while _command is not '0':
@@ -57,7 +56,23 @@ while _command is not '0':
         _staff_id = input("Input Staff ID: ")
         _staff_name = input("Input Staff Name: ")
         insert_staff(_staff_id, _staff_name)
-    _command = print_command()
+    if _command == '2':
+        _item_id = input("Input Item ID: ")
+        _item_name = input("Input Item Name: ")
+        _item_price = input("Input Item Price: ")
+        insert_item(_item_id, _item_name, _item_price)
+    if _command == '3':
+        _warehouse_id = input("Input Warehouse ID: ")
+        _warehouse_mid = input("Input Warehouse Manager ID: ")
+        _warehouse_city = input("Input Warehouse City: ")
+        insert_warehouse(_warehouse_id, _warehouse_mid, _warehouse_city)
+    if _command == '4':
+        _stock_iid = input("Input Item ID: ")
+        _stock_wid = input("Input Warehouse ID: ")
+        _stock_qnty = input("Input Item Quantity: ")
+        insert_stock(_stock_iid, _stock_wid, _stock_qnty)
+
+    _command = get_command()
 
 
 # close connection
