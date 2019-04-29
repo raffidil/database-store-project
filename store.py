@@ -37,20 +37,27 @@ def insert_stock(iid, wid, quantity):
         """INSERT INTO Stock (Iid, Wid, Quantity) VALUES (?,?,?)""", (iid, wid, quantity))
 
 
+def total_quantity():
+    db.execute(
+        """select sum(Quantity) from stock;""")
+    return db.fetchone()[0]
+
+
 def get_command():
     return input("""
-        1.Insert Staff
-        2.Insert Item
-        3.Insert Warehouse
-        4.Insert Stock
-        0.exit\n
-        command: """)
+    |  1.Insert Staff
+    |  2.Insert Item
+    |  3.Insert Warehouse
+    |  4.Insert Stock
+    |  5.Total Quantity
+    |  0.exit\n
+    #  command: """)
 
 
 # main function
+
+
 _command = get_command()
-
-
 while _command is not '0':
     if _command == '1':
         _staff_id = input("Input Staff ID: ")
@@ -71,9 +78,11 @@ while _command is not '0':
         _stock_wid = input("Input Warehouse ID: ")
         _stock_qnty = input("Input Item Quantity: ")
         insert_stock(_stock_iid, _stock_wid, _stock_qnty)
+    if _command == '5':
+        print("\tTotal Quantity of Stocks in All Warehouses: {}".format(
+            str(total_quantity())))
 
     _command = get_command()
-
 
 # close connection
 connection.commit()
