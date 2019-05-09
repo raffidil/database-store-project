@@ -103,6 +103,7 @@ while _command is not '0':
         cls()
         print("\tTotal Quantity of Stocks in All Warehouses: {}".format(
             str(total_quantity())))
+        dummy = input("\nPress Enter to continue...")
 
     _command = get_command()
 
