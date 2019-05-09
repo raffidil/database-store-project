@@ -13,6 +13,7 @@ db.execute(
     """CREATE TABLE IF NOT EXISTS Warehouse (Id number PRIMARY KEY, Mid number, City text)""")
 db.execute(
     """CREATE TABLE IF NOT EXISTS Stock (Iid number ,Wid number, Quantity number)""")
+connection.commit()
 
 # code
 
@@ -20,21 +21,26 @@ db.execute(
 def insert_staff(id, name):
     db.execute(
         """INSERT INTO Staff (Id, Name) VALUES (?,?)""", (id, name))
+    connection.commit()
+
 
 
 def insert_item(id, name, price):
     db.execute(
         """INSERT INTO Item (Id, Name, Price) VALUES (?,?,?)""", (id, name, price))
+    connection.commit()
 
 
 def insert_warehouse(id, mid, city):
     db.execute(
         """INSERT INTO Warehouse (Id, Mid, City) VALUES (?,?,?)""", (id, mid, city))
+    connection.commit()
 
 
 def insert_stock(iid, wid, quantity):
     db.execute(
         """INSERT INTO Stock (Iid, Wid, Quantity) VALUES (?,?,?)""", (iid, wid, quantity))
+    connection.commit()
 
 
 def total_quantity():
