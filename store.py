@@ -14,7 +14,6 @@ db.execute(
 db.execute(
     """CREATE TABLE IF NOT EXISTS Stock (Iid number ,Wid number, Quantity number)""")
 connection.commit()
-
 # code
 
 
@@ -22,7 +21,6 @@ def insert_staff(id, name):
     db.execute(
         """INSERT INTO Staff (Id, Name) VALUES (?,?)""", (id, name))
     connection.commit()
-
 
 
 def insert_item(id, name, price):
@@ -47,6 +45,20 @@ def total_quantity():
     db.execute(
         """select sum(Quantity) from stock;""")
     return db.fetchone()[0]
+
+# IT NEEDS TO BE CHECKED
+def warehouse_value(wid):
+    join=db.execute(
+        """SELECT SUM(Quantity) AS Qty and Price
+        FROM (SELECT Price , Id FROM Item 
+        INNER JOIN Stock ON Id = Iid)
+        WHERE wid = ?
+        GROUP BY Id """(wid) )
+    join=join.fetchall()
+    total=0
+    for row in join:
+        total+=int(row[0])*int(row[1])
+    return total
 
 
 def get_command():
