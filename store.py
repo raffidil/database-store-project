@@ -1,5 +1,5 @@
 import sqlite3
-
+import os
 # create connection
 connection = sqlite3.connect('database.db')
 db = connection.cursor()
@@ -46,6 +46,7 @@ def total_quantity():
         """select sum(Quantity) from stock;""")
     return db.fetchone()[0]
 
+
 # IT NEEDS TO BE CHECKED
 def warehouse_value(wid):
     join=db.execute(
@@ -60,8 +61,11 @@ def warehouse_value(wid):
         total+=int(row[0])*int(row[1])
     return total
 
-
+def cls():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    
 def get_command():
+    cls()
     return input("""
     |  1.Insert Staff
     |  2.Insert Item
@@ -78,27 +82,41 @@ def get_command():
 _command = get_command()
 while _command is not '0':
     if _command == '1':
+        cls()
         _staff_id = input("Input Staff ID: ")
         _staff_name = input("Input Staff Name: ")
         insert_staff(_staff_id, _staff_name)
+        print("Staff Added!")
+        dummy = input("\nPress Enter to continue...")
     if _command == '2':
+        cls()
         _item_id = input("Input Item ID: ")
         _item_name = input("Input Item Name: ")
         _item_price = input("Input Item Price: ")
         insert_item(_item_id, _item_name, _item_price)
+        print("Item Added!")
+        dummy = input("\nPress Enter to continue...")
     if _command == '3':
+        cls()
         _warehouse_id = input("Input Warehouse ID: ")
         _warehouse_mid = input("Input Warehouse Manager ID: ")
         _warehouse_city = input("Input Warehouse City: ")
         insert_warehouse(_warehouse_id, _warehouse_mid, _warehouse_city)
+        print("Warehouse Added!")
+        dummy = input("\nPress Enter to continue...")
     if _command == '4':
+        cls()
         _stock_iid = input("Input Item ID: ")
         _stock_wid = input("Input Warehouse ID: ")
         _stock_qnty = input("Input Item Quantity: ")
         insert_stock(_stock_iid, _stock_wid, _stock_qnty)
+        print("Stock Added!")
+        dummy = input("\nPress Enter to continue...")
     if _command == '5':
+        cls()
         print("\tTotal Quantity of Stocks in All Warehouses: {}".format(
             str(total_quantity())))
+        dummy = input("\nPress Enter to continue...")
 
     _command = get_command()
 
