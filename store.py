@@ -41,10 +41,16 @@ def insert_stock(iid, wid, quantity):
     connection.commit()
 
 
-def total_quantity():
+def total_quantity_all_warehouses():
     db.execute(
         """select sum(Quantity) from stock;""")
     return db.fetchone()[0]
+
+
+def total_quantity_of_each_warehouses():
+    for row in db.execute(
+            """select Wid,sum(Quantity) from stock group by Wid;"""):
+        print(row)
 
 
 # IT NEEDS TO BE CHECKED
@@ -96,27 +102,27 @@ def cls():
 def get_command():
     cls()
     return input("""
-    |===================================|
-    |  1. Insert Staff                  |
-    |  2. Insert Item                   |
-    |  3. Insert Warehouse              |
-    |  4. Insert Stock                  |
-    |===================================|
-    |  5. Total Quantity                |
-    |===================================|
-    |  6. Value of Warehouse by ID      |
-    |  7. Total Value of All Warehouses |
-    |===================================|
-    |  8. Staff Info by Id              |
-    |  9. All Staff Informations        |
-    |===================================|
-    |  10. Total Quantity of All Cities |
-    |===================================|
-    |  11. All Managers Assetes         |
-    |===================================|
-    |  0.exit                           |
-    |===================================|\n
-    #  command: """)
+    ╔═══════════════════════════════════╗
+    ║  1. Insert Staff                  ║
+    ║  2. Insert Item                   ║
+    ║  3. Insert Warehouse              ║
+    ║  4. Insert Stock                  ║
+    ╠═══════════════════════════════════╣
+    ║  5. Total Quantity                ║
+    ╠═══════════════════════════════════╣
+    ║  6. Value of Warehouse by ID      ║
+    ║  7. Total Value of All Warehouses ║
+    ╠═══════════════════════════════════╣
+    ║  8. Staff Info by Id              ║
+    ║  9. All Staff Informations        ║
+    ╠═══════════════════════════════════╣
+    ║  10. Total Quantity of All Cities ║
+    ╠═══════════════════════════════════╣
+    ║  11. All Managers Assetes         ║
+    ╠═══════════════════════════════════╣
+    ║  0. exit                          ║
+    ╚═══════════════════════════════════╝\n
+    ⌘  command: """)
 
 
 # main function
@@ -157,8 +163,10 @@ while _command is not '0':
         dummy = input("\nPress Enter to continue...")
     if _command == '5':
         cls()
-        print("Total Quantity of Stocks in All Warehouses: {}".format(
-            str(total_quantity())))
+        print("Total Quantity of Stocks in Each Warehouse:\n")
+        total_quantity_of_each_warehouses()
+        print("\nTotal Quantity of Stocks in All Warehouses: {}".format(
+            str(total_quantity_all_warehouses())))
         dummy = input("\nPress Enter to continue...")
     if _command == '6':
         cls()
