@@ -78,8 +78,13 @@ def staff_info(id):
         from Staff,Warehouse 
         where Staff.Id==Warehouse.Mid and Staff.Id== ?""", (id,))
     result = db.fetchall()
-    print(tabulate(result, headers=[
-          'ID', 'Name', 'City'], tablefmt='fancy_grid', colalign=("center", "center", "center")))
+    if not result==[]:
+        print(tabulate(result, headers=[
+            'ID', 'Name', 'City'], tablefmt='fancy_grid', colalign=("center", "center", "center")))
+        return False
+        
+    return True
+    
 
 
 def all_staff_info():
@@ -201,7 +206,8 @@ while _command is not '0':
     if _command == '8':
         cls()
         _staff_id = input("Input Staff ID: ")
-        staff_info(_staff_id)
+        while staff_info(_staff_id):
+            _staff_id = input("There Are Some Missing Data About This ID !\nPlease Enter Another Staff ID: ")
         dummy = input("\nPress Enter to continue...")
     if _command == '9':
         cls()
