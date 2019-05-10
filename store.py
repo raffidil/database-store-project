@@ -50,8 +50,33 @@ def total_quantity():
 # IT NEEDS TO BE CHECKED
 def warehouse_value(wid):
     db.execute(
-        """select sum(Quantity)*Price from Stock,Item where Stock.Iid==Item.Id and Stock.Wid == ?""", (wid,))
+        """select sum(Quantity)*Price 
+        from Stock,Item 
+        where Stock.Iid==Item.Id and Stock.Wid == ?""", (wid,))
     return db.fetchone()[0]
+
+
+def all_warehouse_values():
+    for row in db.execute("""select Stock.Wid, sum(Quantity)*Price from Stock,Item where Stock.Iid==Item.Id group by Stock.Wid"""):
+        print(row)
+
+
+def staff_info(id):
+    db.execute("""select Staff.Id,Staff.Name,Warehouse.City from Staff,Warehouse where Staff.Id==Warehouse.Mid and Staff.Id== ?""", (id,))
+    return db.fetchone()
+
+
+def all_staff_info():
+    for row in db.execute(
+            """select Staff.Id,Staff.Name,Warehouse.City
+             from Staff,Warehouse 
+             where Staff.Id==Warehouse.Mid"""):
+        print(row)
+
+
+def total_quantity_of_each_city():
+    for row in db.execute("""select city,sum(Quantity) from Stock, Warehouse where Stock.Wid==Warehouse.id group by city"""):
+        print(row)
 
 
 def cls():
@@ -61,12 +86,21 @@ def cls():
 def get_command():
     cls()
     return input("""
-    |  1.Insert Staff
-    |  2.Insert Item
-    |  3.Insert Warehouse
-    |  4.Insert Stock
-    |  5.Total Quantity
-    |  6.Value of Warehouse
+    |  1. Insert Staff
+    |  2. Insert Item
+    |  3. Insert Warehouse
+    |  4. Insert Stock
+    ====================================
+    |  5. Total Quantity
+    ====================================
+    |  6. Value of Warehouse by ID
+    |  7. Total Value of All Warehouses
+    ====================================
+    |  8. Staff Info by Id
+    |  9. All Staff Informations
+    ====================================
+    |  10. Total Quantity of All Cities
+    ====================================
     |  0.exit\n
     #  command: """)
 
@@ -118,6 +152,26 @@ while _command is not '0':
         print("Total Value of Warehouse #{} : {}".format(
             str(_warehouse_id),
             str(warehouse_value(_warehouse_id))))
+        dummy = input("\nPress Enter to continue...")
+    if _command == '7':
+        cls()
+        print("Total Value of All Warehouses: ")
+        all_warehouse_values()
+        dummy = input("\nPress Enter to continue...")
+    if _command == '8':
+        cls()
+        _staff_id = input("Input Staff ID: ")
+        print("staff info: {}".format(str(staff_info(_staff_id))))
+        dummy = input("\nPress Enter to continue...")
+    if _command == '9':
+        cls()
+        print("All Staff info:\n")
+        all_staff_info()
+        dummy = input("\nPress Enter to continue...")
+    if _command == '10':
+        cls()
+        print("Total Quantity of Each City:\n")
+        total_quantity_of_each_city()
         dummy = input("\nPress Enter to continue...")
 
     _command = get_command()
