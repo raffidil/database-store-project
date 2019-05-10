@@ -49,21 +49,15 @@ def total_quantity():
 
 # IT NEEDS TO BE CHECKED
 def warehouse_value(wid):
-    join=db.execute(
-        """SELECT SUM(Quantity) AS Qty and Price
-        FROM (SELECT Price , Id FROM Item 
-        INNER JOIN Stock ON Id = Iid)
-        WHERE wid = ?
-        GROUP BY Id """(wid) )
-    join=join.fetchall()
-    total=0
-    for row in join:
-        total+=int(row[0])*int(row[1])
-    return total
+    db.execute(
+        """select sum(Quantity)*Price from Stock,Item where Stock.Iid==Item.Id and Stock.Wid == ?""", (wid,))
+    return db.fetchone()[0]
+
 
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
-    
+
+
 def get_command():
     cls()
     return input("""
@@ -72,6 +66,7 @@ def get_command():
     |  3.Insert Warehouse
     |  4.Insert Stock
     |  5.Total Quantity
+    |  6.Value of Warehouse
     |  0.exit\n
     #  command: """)
 
@@ -114,8 +109,15 @@ while _command is not '0':
         dummy = input("\nPress Enter to continue...")
     if _command == '5':
         cls()
-        print("\tTotal Quantity of Stocks in All Warehouses: {}".format(
+        print("Total Quantity of Stocks in All Warehouses: {}".format(
             str(total_quantity())))
+        dummy = input("\nPress Enter to continue...")
+    if _command == '6':
+        cls()
+        _warehouse_id = input("Input Warehouse ID: ")
+        print("Total Value of Warehouse #{} : {}".format(
+            str(_warehouse_id),
+            str(warehouse_value(_warehouse_id))))
         dummy = input("\nPress Enter to continue...")
 
     _command = get_command()
