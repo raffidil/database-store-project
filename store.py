@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from tabulate import tabulate
 # create connection
 connection = sqlite3.connect('database.db')
 db = connection.cursor()
@@ -48,12 +49,12 @@ def total_quantity_all_warehouses():
 
 
 def total_quantity_of_each_warehouses():
-    for row in db.execute(
-            """select Wid,sum(Quantity) from stock group by Wid;"""):
-        print(row)
+    db.execute("""select Wid,sum(Quantity) from stock group by Wid""")
+    result = db.fetchall()
+    print(tabulate(result, headers=[
+          'Warehouse ID', 'Sum of Quantity'], tablefmt='fancy_grid', colalign=("center", "center")))
 
 
-# IT NEEDS TO BE CHECKED
 def warehouse_value(wid):
     db.execute(
         """select sum(Quantity*Price) 
@@ -63,36 +64,53 @@ def warehouse_value(wid):
 
 
 def all_warehouse_values():
-    for row in db.execute("""select Stock.Wid, sum(Quantity*Price) from Stock,Item where Stock.Iid==Item.Id group by Stock.Wid"""):
-        print(row)
+    db.execute(
+        """select Stock.Wid, sum(Quantity*Price) 
+        from Stock,Item where Stock.Iid==Item.Id group by Stock.Wid""")
+    result = db.fetchall()
+    print(tabulate(result, headers=[
+          'Warehouse ID', 'Value'], tablefmt='fancy_grid', colalign=("center", "center")))
 
 
 def staff_info(id):
-    db.execute("""select Staff.Id,Staff.Name,Warehouse.City from Staff,Warehouse where Staff.Id==Warehouse.Mid and Staff.Id== ?""", (id,))
-    return db.fetchone()
+    db.execute(
+        """select Staff.Id,Staff.Name,Warehouse.City 
+        from Staff,Warehouse 
+        where Staff.Id==Warehouse.Mid and Staff.Id== ?""", (id,))
+    result = db.fetchall()
+    print(tabulate(result, headers=[
+          'ID', 'Name', 'City'], tablefmt='fancy_grid', colalign=("center", "center", "center")))
 
 
 def all_staff_info():
-    for row in db.execute(
-            """select Staff.Id,Staff.Name,Warehouse.City
-             from Staff,Warehouse 
-             where Staff.Id==Warehouse.Mid"""):
-        print(row)
+    db.execute(
+        """select Staff.Id,Staff.Name,Warehouse.City
+        from Staff,Warehouse 
+        where Staff.Id==Warehouse.Mid""")
+    result = db.fetchall()
+    print(tabulate(result, headers=[
+          'ID', 'Name', 'City'], tablefmt='fancy_grid', colalign=("center", "center", "center")))
 
 
 def total_quantity_of_each_city():
-    for row in db.execute("""select city,sum(Quantity) from Stock, Warehouse where Stock.Wid==Warehouse.id group by city"""):
-        print(row)
+    db.execute("""select city,sum(Quantity) 
+        from Stock, Warehouse 
+        where Stock.Wid==Warehouse.id group by city""")
+    result = db.fetchall()
+    print(tabulate(result, headers=[
+          'City', 'Total Quantity'], tablefmt='fancy_grid', colalign=("center", "center")))
 
 
 def all_manager_assets():
-    for row in db.execute("""select Warehouse.Mid,Staff.Name,sum(Stock.Quantity*Item.Price)
+    db.execute("""select Warehouse.Mid,Staff.Name,sum(Stock.Quantity*Item.Price)
              from Staff,Item,Warehouse,Stock 
              where Warehouse.Mid == Staff.Id 
              and Warehouse.Id==Stock.Wid 
              and Stock.Iid == Item.Id 
-             group by Warehouse.Mid"""):
-        print(row)
+             group by Warehouse.Mid""")
+    result = db.fetchall()
+    print(tabulate(result, headers=[
+          'ID', 'Name', 'Total Asset'], tablefmt='fancy_grid', colalign=("center", "center", "center")))
 
 
 def cls():
@@ -122,7 +140,7 @@ def get_command():
     ╠═══════════════════════════════════╣
     ║  0. exit                          ║
     ╚═══════════════════════════════════╝\n
-    ⌘  command: """)
+    ⌘ command: """)
 
 
 # main function
@@ -183,7 +201,7 @@ while _command is not '0':
     if _command == '8':
         cls()
         _staff_id = input("Input Staff ID: ")
-        print("staff info: {}".format(str(staff_info(_staff_id))))
+        staff_info(_staff_id)
         dummy = input("\nPress Enter to continue...")
     if _command == '9':
         cls()
@@ -197,7 +215,7 @@ while _command is not '0':
         dummy = input("\nPress Enter to continue...")
     if _command == '11':
         cls()
-        print("All Manager Assets:\n")
+        print("All Managers total Asset:\n")
         all_manager_assets()
         dummy = input("\nPress Enter to continue...")
 
